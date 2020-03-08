@@ -1,6 +1,13 @@
 #include "handmade.h"
 #include <math.h>
 
+inline uint32 SafeTruncateInt64(uint64 Value)
+{
+    Assert(Value <= 0xFFFFFFFF);
+    uint32 Result = (uint32)Value;
+    return Result;
+}
+
 internal void GameSoundOutput(game_sound_output_buffer *SoundBuffer, int ToneHz)
 {
     local_persist real32 tSine;
@@ -49,6 +56,16 @@ internal void GameUpdateAndRender(game_memory* Memory, game_input* Input,
     game_state* GameState = (game_state *)Memory->PermanentStorage;
     if (!Memory->IsInitialized)
     {
+        char* FileName = (char*) __FILE__;
+
+        debug_read_file_result File = DEBUGPlatformReadEntireFile(FileName);
+        if (File.Contents)
+        {
+            DEBUGPlatformWriteEntireFile((char*)"test.out", 
+                File.ContentsSize, File.Contents);
+            DEBUGPlatformFreeFileMemory(File.Contents);
+        }
+
         GameState->ToneHz = 256;
 
         Memory->IsInitialized = true;

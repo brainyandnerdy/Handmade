@@ -12,6 +12,8 @@ HANDMADE_SLOW:
 1 - Slow code welcome
 */
 
+
+
 #if HANDMADE_SLOW
 #define Assert(Expression) if(!(Expression)) {*(int *)0 = 0;}
 #else
@@ -25,10 +27,10 @@ HANDMADE_SLOW:
 #define Pi32 3.14159265359f
 
 
-#define Kilobytes(Value) ((Value)*1024)
-#define Megabytes(Value) (Kilobytes(Value)*1024)
-#define Gigabytes(Value) (Megabytes(Value)*1024)
-#define Terabytes(Value) (Gigabytes(Value)*1024)
+#define Kilobytes(Value) ((Value)*1024LL)
+#define Megabytes(Value) (Kilobytes(Value)*1024LL)
+#define Gigabytes(Value) (Megabytes(Value)*1024LL)
+#define Terabytes(Value) (Gigabytes(Value)*1024LL)
 
 typedef int8_t int8;
 typedef int16_t int16;
@@ -46,7 +48,18 @@ typedef double real64;
 
 #define ArrayCount(Array) (sizeof(Array) / sizeof((Array[0])))
 // Services that the platform layer provides to the game
+#if HANDMADE_INTERNAL
 
+struct debug_read_file_result
+{
+    uint32 ContentsSize;
+    void* Contents;
+};
+
+debug_read_file_result DEBUGPlatformReadEntireFile(char* FileName);
+void* DEBUGPlatformFreeFileMemory(void* Memory);
+bool32 DEBUGPlatformWriteEntireFile(char* FileName, uint32 MemorySize, void* Memory);
+#endif
 
 // Services that the game provides to the platform layer
 
