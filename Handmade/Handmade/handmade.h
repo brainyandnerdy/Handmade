@@ -2,11 +2,33 @@
 
 #include <stdint.h>
 
+/*
+HANDMADE_INTERNAL:
+0 - Built for public release
+1 - Built for developer only
+
+HANDMADE_SLOW:
+0 - No slow code allowed
+1 - Slow code welcome
+*/
+
+#if HANDMADE_SLOW
+#define Assert(Expression) if(!(Expression)) {*(int *)0 = 0;}
+#else
+#define Assert(Expression) 
+#endif
+
 #define internal static
 #define local_persist static
 #define global_variable static
 
 #define Pi32 3.14159265359f
+
+
+#define Kilobytes(Value) ((Value)*1024)
+#define Megabytes(Value) (Kilobytes(Value)*1024)
+#define Gigabytes(Value) (Megabytes(Value)*1024)
+#define Terabytes(Value) (Gigabytes(Value)*1024)
 
 typedef int8_t int8;
 typedef int16_t int16;
@@ -79,13 +101,35 @@ struct game_controller_input
     };
 };
 
+
 struct game_input
 {
+    // TODO insert clock values here
     game_controller_input Controllers[4];
 };
 
-internal void GameUpdateAndRender(game_input *Input, game_offscreen_buffer* Buffer, 
-    game_sound_output_buffer* SoundBuffer);
+
+struct game_memory
+{
+    bool32 IsInitialized;
+    uint64 PermanentStorageSize;
+    void* PermanentStorage;
+
+    uint64 TransientStorageSize;
+    void* TransientStorage;
+};
+
+
+struct game_state
+{
+    int ToneHz;
+    int GreenOffset;
+    int BlueOffset;
+};
+
+
+internal void GameUpdateAndRender(game_memory* Memory, game_input *Input, 
+    game_offscreen_buffer* Buffer, game_sound_output_buffer* SoundBuffer);
 
 #define HANDMADE_H
 #endif
